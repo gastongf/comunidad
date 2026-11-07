@@ -1,0 +1,22 @@
+services:
+  comunidad:
+    build: .
+    image: comunidad
+    container_name: comunidad-app
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.comunidad.rule=Host(`comunidad.regno.cl`)"
+      - "traefik.http.routers.comunidad.middlewares=security-headers@file"
+      - "traefik.http.services.comunidad.loadbalancer.server.port=80"
+    volumes:
+      - comunidad_storage:/var/www/html/storage/app/public
+    networks:
+      - traefik-public
+
+volumes:
+  comunidad_storage:
+
+networks:
+  traefik-public:
+    external: true
