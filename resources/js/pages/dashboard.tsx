@@ -120,6 +120,87 @@ type CompanyStats = {
     recent: { id: number; name: string; profession: string | null; job: string; job_id: number; created_at: string }[];
 };
 
+type MyPaper = {
+    id: number;
+    title: string;
+    type: 'solicitud' | 'aporte';
+    scientific_area: string;
+    created_at: string;
+};
+
+type MyApplication = {
+    id: number;
+    job: string;
+    company: string | null;
+    status: string;
+    statusLabel: string;
+    created_at: string;
+};
+
+type MyContent = {
+    papers: MyPaper[];
+    applications: MyApplication[];
+};
+
+function formatDate(value: string) {
+    return new Date(value).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function ScientistDashboard({ content }: { content: MyContent }) {
+    return (
+        <>
+            <div>
+                <h1 className="text-xl font-semibold">Mi panel</h1>
+                <p className="text-sm text-muted-foreground">Resumen de tu actividad en la comunidad.</p>
+            </div>
+            <div className="grid gap-4 lg:grid-cols-2">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-base">Mis publicaciones</CardTitle>
+                        <CardDescription>Papers y recursos que has compartido o solicitado.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-3">
+                        {content.papers.length === 0 && <p className="text-sm text-muted-foreground">Aún no has subido papers.</p>}
+                        {content.papers.map((paper) => (
+                            <div key={paper.id} className="flex flex-col gap-1 border-b pb-2 text-sm last:border-b-0">
+                                <div className="flex items-center justify-between gap-3">
+                                    <span className="font-medium">{paper.title}</span>
+                                    <span className="shrink-0 text-xs text-muted-foreground">
+                                        {paper.type === 'solicitud' ? 'Solicitud' : 'Aporte'}
+                                    </span>
+                                </div>
+                                <span className="text-xs text-muted-foreground">
+                                    {paper.scientific_area} · {formatDate(paper.created_at)}
+                                </span>
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-base">Mis postulaciones</CardTitle>
+                        <CardDescription>Empleos a los que has postulado.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex flex-col gap-3">
+                        {content.applications.length === 0 && <p className="text-sm text-muted-foreground">Aún no has postulado a empleos.</p>}
+                        {content.applications.map((application) => (
+                            <div key={application.id} className="flex flex-col gap-1 border-b pb-2 text-sm last:border-b-0">
+                                <div className="flex items-center justify-between gap-3">
+                                    <span className="font-medium">{application.job}</span>
+                                    <span className="shrink-0 text-xs text-muted-foreground">{application.statusLabel}</span>
+                                </div>
+                                <span className="text-xs text-muted-foreground">
+                                    {application.company} · {formatDate(application.created_at)}
+                                </span>
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
+            </div>
+        </>
+    );
+}
+
 function ProfileAlert() {
     return (
         <Alert>
@@ -178,10 +259,12 @@ export default function Dashboard({
     stats,
     profileIncomplete = false,
     companyStats = null,
+    myContent = null,
 }: {
     stats: Stats | null;
     profileIncomplete?: boolean;
     companyStats?: CompanyStats | null;
+    myContent?: MyContent | null;
 }) {
     if (!stats) {
         return (
@@ -191,6 +274,8 @@ export default function Dashboard({
                     {profileIncomplete && <ProfileAlert />}
                     {companyStats ? (
                         <CompanyDashboard stats={companyStats} />
+                    ) : myContent ? (
+                        <ScientistDashboard content={myContent} />
                     ) : (
                         <div className="relative min-h-[60vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                             <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />

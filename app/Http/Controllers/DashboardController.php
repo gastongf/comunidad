@@ -29,7 +29,45 @@ class DashboardController extends Controller
             'stats' => $isSuperAdmin ? $this->superAdminStats() : null,
             'profileIncomplete' => $user->hasRole('Cientifico') && ! $user->hasCompleteProfessionalProfile(),
             'companyStats' => $user->hasRole('Empresa') && $user->company ? $this->companyStats($user->company) : null,
+            'myContent' => $user->hasRole('Cientifico') ? $this->scientistContent($user) : null,
         ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function scientistContent(User $user): array
+    {
+        $papers = Paper::query()
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get()
+            ->map(fn (Paper $paper) => [
+                'id' => $paper->id,
+                'title' => $paper->title,
+                'type' => $paper->type,
+                'scientific_area' => $paper->scientific_area,
+                'created_at' => $paper->created_at,
+            ]);
+
+        $applications = JobApplication::query()
+            ->where('user_id', $user->id)
+            ->with(['jobPosting:id,title,company_id', 'jobPosting.company:id,name'])
+            ->latest()
+            ->get()
+            ->map(fn (JobApplication $application) => [
+                'id' => $application->id,
+                'job' => $application->jobPosting->title,
+                'company' => $application->jobPosting->company?->name,
+                'status' => $application->status,
+                'statusLabel' => JobApplication::STATUSES[$application->status] ?? $application->status,
+                'created_at' => $application->created_at,
+            ]);
+
+        return [
+            'papers' => $papers,
+            'applications' => $applications,
+        ];
     }
 
     /**
