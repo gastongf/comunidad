@@ -10,7 +10,7 @@ services:
       - "traefik.http.routers.comunidad.middlewares=security-headers@file"
       - "traefik.http.services.comunidad.loadbalancer.server.port=80"
     volumes:
-      - comunidad_storage:/var/www/html/storage/app/public
+      - comunidad_storage:/var/www/html/storage
     networks:
       - traefik-public
 
