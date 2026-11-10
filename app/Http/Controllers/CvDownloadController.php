@@ -6,6 +6,7 @@ use App\Models\AdditionalInformation;
 use App\Models\JobApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class CvDownloadController extends Controller
@@ -28,6 +29,8 @@ class CvDownloadController extends Controller
         abort_unless($allowed && filled($additionalInformation->cv_path), 403);
         abort_unless(Storage::disk('local')->exists($additionalInformation->cv_path), 404);
 
-        return Storage::disk('local')->download($additionalInformation->cv_path, 'cv-'.$additionalInformation->user_id.'.pdf');
+        $ownerName = Str::slug($additionalInformation->user->name);
+
+        return Storage::disk('local')->download($additionalInformation->cv_path, 'cv-'.$ownerName.'.pdf');
     }
 }
