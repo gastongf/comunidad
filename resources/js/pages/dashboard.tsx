@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import { UserRoundPen } from 'lucide-react';
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, LabelList, Pie, PieChart, XAxis, YAxis } from 'recharts';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { ChartConfig } from '@/components/ui/chart';
@@ -146,6 +147,21 @@ function formatDate(value: string) {
     return new Date(value).toLocaleDateString('es-CL', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 
+const applicationStatusStyles: Record<string, string> = {
+    recibida: 'bg-blue-50 border border-blue-200/60 text-blue-700',
+    revisada: 'bg-indigo-50 border border-indigo-200/60 text-indigo-700',
+    preseleccionada: 'bg-green-50 border border-green-200/60 text-green-700',
+    descartada: 'bg-red-50 border border-red-200/60 text-red-700',
+};
+
+function ApplicationStatusBadge({ status, label }: { status: string; label: string }) {
+    return (
+        <Badge className={`px-2 py-0.5 text-[11px] font-semibold ${applicationStatusStyles[status] ?? ''}`}>
+            {label}
+        </Badge>
+    );
+}
+
 function ScientistDashboard({ content }: { content: MyContent }) {
     return (
         <>
@@ -187,7 +203,7 @@ function ScientistDashboard({ content }: { content: MyContent }) {
                             <div key={application.id} className="flex flex-col gap-1 border-b pb-2 text-sm last:border-b-0">
                                 <div className="flex items-center justify-between gap-3">
                                     <span className="font-medium">{application.job}</span>
-                                    <span className="shrink-0 text-xs text-muted-foreground">{application.statusLabel}</span>
+                                    <ApplicationStatusBadge status={application.status} label={application.statusLabel} />
                                 </div>
                                 <span className="text-xs text-muted-foreground">
                                     {application.company} · {formatDate(application.created_at)}
