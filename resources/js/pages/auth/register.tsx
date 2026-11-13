@@ -163,44 +163,52 @@ export default function Register({ passwordRules, categorias }: Props) {
                                 />
                             </div>
 
-                            <div className="flex items-start space-x-3">
-                                <Checkbox
-                                    id="terms"
-                                    name="terms"
-                                    required
-                                    tabIndex={5}
-                                    className="mt-0.5"
-                                />
-                                <div className="grid gap-1">
-                                    <Label htmlFor="terms" className="text-sm">
-                                        Acepto los{" "}
-                                        <TextLink href="/terminos-y-condiciones">
-                                            Términos y Condiciones
-                                        </TextLink>
-                                    </Label>
-                                    <InputError message={errors.terms} />
+                            <div className="space-y-3">
+                                <div className="flex items-start gap-2.5">
+                                    <Checkbox
+                                        id="terms"
+                                        name="terms"
+                                        required
+                                        tabIndex={5}
+                                        className="mt-0.5"
+                                    />
+                                    <div className="flex flex-col gap-1">
+                                        <label
+                                            htmlFor="terms"
+                                            className="text-sm leading-relaxed text-muted-foreground"
+                                        >
+                                            Acepto los{' '}
+                                            <TextLink href="/terminos-y-condiciones">
+                                                Términos y Condiciones
+                                            </TextLink>
+                                        </label>
+                                        <InputError message={errors.terms} />
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div className="flex items-start space-x-3">
-                                <Checkbox
-                                    id="privacy"
-                                    name="privacy"
-                                    required
-                                    tabIndex={6}
-                                    className="mt-0.5"
-                                />
-                                <div className="grid gap-1">
-                                    <Label htmlFor="privacy" className="text-sm">
-                                        Acepto la{" "}
-                                        <TextLink href="/politica-de-privacidad">
-                                            Política de Privacidad
-                                        </TextLink>{" "}
-                                        y el tratamiento de mis datos personales
-                                        conforme a la Ley N° 21.719 de Protección
-                                        de Datos Personales
-                                    </Label>
-                                    <InputError message={errors.privacy} />
+                                <div className="flex items-start gap-2.5">
+                                    <Checkbox
+                                        id="privacy"
+                                        name="privacy"
+                                        required
+                                        tabIndex={6}
+                                        className="mt-0.5"
+                                    />
+                                    <div className="flex flex-col gap-1">
+                                        <label
+                                            htmlFor="privacy"
+                                            className="text-sm leading-relaxed text-muted-foreground"
+                                        >
+                                            Acepto la{' '}
+                                            <TextLink href="/politica-de-privacidad">
+                                                Política de Privacidad
+                                            </TextLink>{' '}
+                                            y el tratamiento de mis datos personales
+                                            conforme a la Ley N° 21.719 de Protección
+                                            de Datos Personales.
+                                        </label>
+                                        <InputError message={errors.privacy} />
+                                    </div>
                                 </div>
                             </div>
 
